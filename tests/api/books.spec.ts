@@ -25,10 +25,9 @@ test('Should not add Book that is not available in Book Store', async ({ booksAp
 
 test('Should delete Book from User', async ({ booksApi, userApi }) => {
   const isbn = await booksApi.addBookToUser(userId);
-
   await booksApi.deleteBook(userId, isbn);
-
   const userBooks = await userApi.getUserData(userId);
+  
   expect(userBooks.books).not.toContainEqual(expect.objectContaining({ isbn }));
 });
 
