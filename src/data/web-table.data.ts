@@ -7,7 +7,7 @@ export interface IWebTableRecord {
   department: string;
 }
 
-export const IWebTableRecord: IWebTableRecord = {
+export const webTableRecord: IWebTableRecord = {
   firstName: 'Alden',
   lastName: 'Cantrell',
   age: 30,

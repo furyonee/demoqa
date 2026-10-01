@@ -1,4 +1,4 @@
-import { APIRequestContext, APIResponse } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 import { BASE_URL } from '../config/config';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
@@ -13,19 +13,19 @@ type BaseRequestParams = {
 export abstract class BaseApi {
   constructor(protected request: APIRequestContext) {}
 
-  get(path: string, headers: any) {
+  get<TResponse>(path: string, headers?: Record<string, string>): Promise<TResponse> {
     return this.baseRequest({ method: 'get', path, headers });
   }
 
-  post<TData>(path: string, data: TData) {
-    return this.baseRequest({ method: 'post', path, data });
+  post<TResponse>(path: string, data: unknown, headers?: Record<string, string>): Promise<TResponse> {
+    return this.baseRequest({ method: 'post', path, data, headers });
   }
 
-  delete(path: string, headers: any) {
-    return this.baseRequest({ method: 'delete', path, headers });
+  delete<TResponse>(path: string, headers?: Record<string, string>, data?: unknown): Promise<TResponse> {
+    return this.baseRequest({ method: 'delete', path, headers, data });
   }
 
-  private async baseRequest({ method, path, data, headers }: BaseRequestParams) {
+  private async baseRequest<TResponse>({ method, path, data, headers }: BaseRequestParams): Promise<TResponse> {
     const url = `${BASE_URL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
     const response = await this.request[method](url, {
       ...(data !== undefined ? { data } : {}),
@@ -39,10 +39,10 @@ export abstract class BaseApi {
       );
     }
     if (response.status() === 204) {
-      return;
+      return undefined as TResponse;
     }
     const body = await response.json();
 
-    return body.data ?? body;
+    return body as TResponse;
   }
 }

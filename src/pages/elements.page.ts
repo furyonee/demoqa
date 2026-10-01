@@ -23,8 +23,10 @@ export class ElementsPage extends BasePage {
 
   async verifyRecordIsDisplayed(record: IWebTableRecord): Promise<void> {
     const { firstName, lastName, email, age, salary, department } = record;
-    const row = this.page.getByRole('row').filter({ hasText: firstName });
+    const row = this.page.locator('tbody tr').filter({ hasText: firstName });
 
-    await expect(row).toContainText([firstName, lastName, String(age), email, String(salary), department]);
+    await expect(row).toContainText(
+      [firstName, lastName, String(age), email, String(salary), department].join('')
+    );
   }
 }
