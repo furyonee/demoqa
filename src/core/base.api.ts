@@ -1,5 +1,4 @@
 import { APIRequestContext } from '@playwright/test';
-import { BASE_URL } from '../config/config';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
@@ -26,14 +25,13 @@ export abstract class BaseApi {
   }
 
   private async baseRequest<TResponse>({ method, path, data, headers }: BaseRequestParams): Promise<TResponse> {
-    const url = `${BASE_URL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
-    const response = await this.request[method](url, {
+    const response = await this.request[method](path, {
       ...(data !== undefined ? { data } : {}),
       ...(headers ? { headers } : {})
     });
     if (!response.ok()) {
       throw new Error(
-        `${method.toUpperCase()} ${url} failed:
+        `${method.toUpperCase()} ${path} failed:
         ${response.status()} ${response.statusText()}\n
         ${await response.text()}`
       );

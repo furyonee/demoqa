@@ -8,7 +8,8 @@ export default defineConfig({
   workers: 1,
   reporter: [['html', { open: 'never' }]],
   use: {
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+    baseURL: 'https://demoqa.com'
   },
   projects: [
     {

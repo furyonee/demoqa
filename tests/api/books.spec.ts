@@ -14,11 +14,16 @@ test('Should add Book to User', async ({ booksApi, userApi }) => {
   const isbn = await booksApi.addBookToUser(userId);
   const userBooks = await userApi.getUserData(userId);
 
-  expect(userBooks.books).toContainEqual(expect.objectContaining({ isbn }));
+  expect(userBooks.books, `User ${userId} should contain the added book with ISBN ${isbn}`).toContainEqual(
+    expect.objectContaining({ isbn })
+  );
 });
 
 test('Should not add Book that is not available in Book Store', async ({ booksApi }) => {
-  await expect(booksApi.addBookToUser(userId, '0000000000000')).rejects.toThrow(
+  await expect(
+    booksApi.addBookToUser(userId, '0000000000000'),
+    `Adding an unavailable book to user ${userId} should fail`
+  ).rejects.toThrow(
     'ISBN supplied is not available in Books Collection!'
   );
 });
@@ -28,14 +33,19 @@ test('Should delete Book from User', async ({ booksApi, userApi }) => {
   await booksApi.deleteBook(userId, isbn);
   const userBooks = await userApi.getUserData(userId);
   
-  expect(userBooks.books).not.toContainEqual(expect.objectContaining({ isbn }));
+  expect(userBooks.books, `User ${userId} should not contain the deleted book with ISBN ${isbn}`).not.toContainEqual(
+    expect.objectContaining({ isbn })
+  );
 });
 
 test('Should not delete Book that is not in User collection', async ({ booksApi }) => {
   const isbn = await booksApi.addBookToUser(userId);
   await booksApi.deleteBook(userId, isbn);
 
-  await expect(booksApi.deleteBook(userId, isbn)).rejects.toThrow(
+  await expect(
+    booksApi.deleteBook(userId, isbn),
+    `Deleting a book twice for user ${userId} should fail`
+  ).rejects.toThrow(
     "ISBN supplied is not available in User's Collection!"
   );
 });

@@ -1,10 +1,12 @@
-import { ElementsPage } from "../pages/elements.page";
-import { MainPage } from "../pages/main.page";
-import { test as base } from "@playwright/test";
+import { test as base } from '@playwright/test';
+import { MainPage } from '../pages/main.page';
+import { ElementsPage } from '../pages/elements.page';
+import { WebTablesPage } from '../pages/web-tables.page';
 
 interface PageFixtures {
   mainPage: MainPage;
   elementsPage: ElementsPage;
+  webTablesPage: WebTablesPage;
 }
 
 export const pageFixtures = base.extend<PageFixtures>({
@@ -14,4 +16,7 @@ export const pageFixtures = base.extend<PageFixtures>({
   elementsPage: async ({ page }, use) => {
     await use(new ElementsPage(page));
   },
+  webTablesPage: async ({ page }, use) => {
+    await use(new WebTablesPage(page));
+  }
 });
